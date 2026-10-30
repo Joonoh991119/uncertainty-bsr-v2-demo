@@ -35,7 +35,9 @@
   };
 
   // The demo ends where the first main block would start: the page marks the block of every screen on
-  // <body data-block>, and the practice block is block 0.
+  // <body data-block>, and the practice block is block 0. Only the screens that open a block count (its intro,
+  // slides before it, its trials: data-screen ''): the stop and end screens carry the session's last block.
+  var OPENING = ['block_intro', 'slide', 'walkthrough', 'estimation_walkthrough', 'stack_walkthrough', 'check', ''];
   var finished = false;
   function endDemo() {
     if (finished) return;
@@ -44,12 +46,14 @@
     window.addEventListener('beforeunload', function (e) { e.stopImmediatePropagation(); }, true);
     try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) {}
     try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
-    window.location.replace('demo_end.html?ending=practice_done&context=' + context);
+    window.location.replace('demo_end.html?ending=practice_done&context=' + context + '&at=' + encodeURIComponent(document.body.dataset.screen || 'trials'));
   }
   function watch() {
     var b = document.body;
     if (!b) return void setTimeout(watch, 50);
-    var check = function () { if (Number(b.dataset.block) >= 1) endDemo(); };
+    var check = function () {
+      if (b.dataset.block !== '' && Number(b.dataset.block) >= 1 && OPENING.indexOf(b.dataset.screen || '') >= 0) endDemo();
+    };
     new MutationObserver(check).observe(b, { attributes: true, attributeFilter: ['data-block', 'data-screen'] });
     check();
   }
