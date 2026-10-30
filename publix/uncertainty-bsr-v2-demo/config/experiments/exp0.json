@@ -1,0 +1,1282 @@
+{
+  "_README": "Numerosity practice study (exp0) configuration, decision 95 (author, 2026-10-04): the task of exp1.json unchanged (same clouds, stored set, schedules, trial types, timing, reward rules, instructions and text); only the identity, the run and the pay differ. Each session = exercise blocks estimation+betting, scaling, full, then 3 main blocks of the full task, 30 trials each; the two sessions differ only in the context, whose order is counterbalanced by participant (the profile's online.counterbalance). feature_assignment.test_blocks stays 9: it counts the blocks of the stored Latin-thirds schedule, and a run shows the first blocks.runs.session.n_test_blocks (3) of the participant's permuted order; each stored block holds every size third x spacing third combination 3 or 4 times, so that balance holds within each of the 3 blocks. Keys starting with '_' are comments. Keep the shared sections equal to exp1.json when either changes.",
+  "schema_version": 1,
+  "experiment_id": "numerosity_exp0",
+  "seed_salt": "numerosity_exp0_v1",
+  "distribution_file": "config/design/stimulus_distribution.json",
+  "display": {
+    "_note": "One uniform mid-grey for every screen, so the eye is adapted to the same luminance throughout. sRGB 176 is ~2x the linear luminance of sRGB 128, and 0 is black, so dark and bright dots/checks balance around the background in linear light (nominal, uncalibrated monitor).",
+    "background_srgb": 128,
+    "text_srgb": 0,
+    "sizing": {
+      "_note": "2026-10-14: the online profile measures no viewing distance any more (no card); an online run's geometry is this reference layout scaled to the full-screen window, as in exp1.json (Exp0 is no longer run; added so the file still runs under the online profile).",
+      "reference_width_px": 1920,
+      "reference_height_px": 1080,
+      "reference_px_per_deg": 44.3
+    }
+  },
+  "stimulus": {
+    "cloud": {
+      "_note": "DeWind et al. (2015) size/spacing scheme. For a count N, log Size (= log item area + log total area) and log Spacing (= log field area + log sparsity) are drawn independently of N, so N is uncorrelated with Size, Spacing and coverage. Item area, field area, total area and density then necessarily co-vary with N and are recorded as covariates.",
+      "feature_scheme": "size_spacing",
+      "reference_count": "geometric_mean_of_support",
+      "reference_dot_diameter_deg": 0.32,
+      "reference_field_radius_deg": 5.4,
+      "size_range_factor": 2.5,
+      "spacing_range_factor": 2.5,
+      "min_centre_distance_diameters": 2.0,
+      "polarity": "mixed",
+      "dot_srgb": {
+        "dark": 0,
+        "bright": 176
+      },
+      "placement": {
+        "max_attempts_per_dot": 5000,
+        "max_restarts": 20
+      },
+      "limits": {
+        "max_density_per_deg2": 1.0,
+        "min_mean_spacing_deg": 1.0,
+        "max_packing_fraction": 0.35
+      }
+    },
+    "fixation": {
+      "_note": "The combined bullseye and cross-hair target of Thaler et al. (2013). Shown during the inter-trial interval in `srgb` (black); during the pre-cue (timing.fixation_ms) it keeps its size and takes `pre_stimulus_srgb` (author, 2026-10-02: colour only, no size change), so its change of colour is the fixed warning before the cloud; removed at cloud onset. After a miss it is shown once in missing_response.missing_rgb (the yellow mark).",
+      "style": "bullseye_cross",
+      "outer_diameter_deg": 0.6,
+      "inner_diameter_deg": 0.2,
+      "srgb": 0,
+      "remove_at_cloud_onset": true,
+      "pre_stimulus_srgb": 255
+    },
+    "set": {
+      "_status": "read by build stage 1 (fixed stimulus set, 2026-10-01); files built by tools/build_stimulus_set.ts and tools/build_schedules.ts; hashes are raw-byte SHA-256 recomputed by the loader",
+      "test_file": "config/design/stimulus_set/test_set.json",
+      "train_file": "config/design/stimulus_set/train_set.json",
+      "schedules_file": "config/design/stimulus_set/schedules.json",
+      "test_sha256": "1cb0c9a407a2d611cbd5cba931072bac3a9cbd22f9988743e935b0a48db4a3c8",
+      "train_sha256": "9eb895f1c8eabcc4f4e0b06a256ff2569cd058219c9c91fb2efeae48d4a6f35c",
+      "schedules_sha256": "738945c3de238502b8053fc916ec5c19b9cccffe98cf2f6c7807076c96192a33"
+    }
+  },
+  "timing": {
+    "_note": "Prospective 2026-10-06 shared target timing: exact exposures of 5 and 18 frames (60 Hz reference 83.333/300 ms), 750 ms white precue, and a contiguous 250 ms static pixel-noise mask. Betting lasts 3500 ms in every block. The fixed slot uses the measured refresh interval for frame-count conditions. Each experiment retains its own feedback duration and reward rules. Mask appearance remains provisional pending author approval.",
+    "iti_ms": 300,
+    "fixation_ms": 750,
+    "exposure_ms": {
+      "short": 83.33333333333334,
+      "long": 300
+    },
+    "max_quantization_error": 0.03,
+    "late_frame_factor": 1.5,
+    "refresh_measure": {
+      "warmup_frames": 20,
+      "intervals": 60,
+      "max_mad_ms": 2,
+      "max_attempts": 3
+    },
+    "refresh_drift_tolerance": 0.05,
+    "fullscreen_settle_frames": 5,
+    "fullscreen_settle_max_ms": 1000,
+    "backward_mask": {
+      "duration_ms": 250,
+      "texture": "static_pixel_noise",
+      "aperture_radius_deg": 8,
+      "pixel_size_deg": 0.08,
+      "dark_srgb": 0,
+      "bright_srgb": 176,
+      "seed": 20261006,
+      "status": "provisional_visual_choice"
+    },
+    "exposure_frames": {
+      "short": 5,
+      "long": 18
+    }
+  },
+  "feature_assignment": {
+    "_note": "Size and Spacing are each split into thirds of their log range. Across the 9 full-task test blocks every (level x exposure) cell meets each of the 9 (size third x spacing third) combinations exactly once, and every block holds each combination 3-4 times. Block order of the square is permuted per participant so the square is not confounded with time in session. Train blocks draw combinations stratified at random.",
+    "scheme": "latin_thirds",
+    "n_thirds": 3,
+    "test_blocks": 9,
+    "permute_blocks_per_participant": true,
+    "train": "stratified_random"
+  },
+  "spaces": {
+    "_note": "The two response widgets (author, 2026-10-03, decisions 76-78). count = the number line of the estimation response and the betting range (absolute space, values are counts): a horizontal line through the screen centre (y_offset_deg 0, no random shift), length_fraction_of_width of the stage width (about 20 deg in the laboratory), 8 to 76 so that its middle is 42 (the mirror centre of the two contexts), no ticks and no labels; the estimation response is snapped to an integer (point_snap) and the betting ends too (interval_snap); probe_number writes the integer under the cursor above the preview disc on the named phases only (the estimation screen; the betting screen shows no number). rho = the scaling arc of the scaling response (relative space, values in [0, 1]): a half circle of radius_deg around the screen centre, always centred there, whose orientation (the angle of its middle) is drawn per trial from the trial seed and recorded, 'Smaller' and 'Larger' at its ends (end_labels), values growing from the 'Smaller' end to the 'Larger' end in `direction`. A line is shape 'line' (length, height, shift); an arc is shape 'arc' (radius, span, orientation, direction); a key of the other shape is refused. The scaling arc and the number line differ in shape so that a screen position cannot be copied from one to the other. Revised 2026-10-04: the number line lies 3 deg above the screen centre (y_offset_deg -3, decision 96), so the betting button sits on the fixation mark's place; the scaling arc is drawn as a ring (spaces.rho.ring, decisions 92 and 123: a 1-deg band over the whole circle, the response half a blue-to-red gradient from Smaller to Larger, the other half grey 112, radial bars inside the band for the probe, the highlight, the participant's answer and the green true position); its orientation is drawn over the upper half only, [-90, 90] in the convention 0 = straight up, clockwise positive (decision 89).",
+    "count": {
+      "shape": "line",
+      "axis": {
+        "min": 8,
+        "max": 76
+      },
+      "ticks": null,
+      "point_snap": "integer",
+      "interval_snap": "integer",
+      "length_fraction_of_width": 0.4,
+      "y_offset_deg": -3,
+      "random_shift_deg": null,
+      "show_support": false,
+      "probe_number": {
+        "phases": [
+          "estimation"
+        ],
+        "gap_deg": 0.2
+      }
+    },
+    "rho": {
+      "shape": "arc",
+      "axis": {
+        "min": 0,
+        "max": 1
+      },
+      "point_snap": "none",
+      "interval_snap": "none",
+      "radius_deg": 5,
+      "arc_deg": 180,
+      "orientation_deg": {
+        "random": true,
+        "range": [
+          -90,
+          90
+        ]
+      },
+      "direction": "clockwise",
+      "end_labels": "scaling_ends",
+      "ring": {
+        "band_width_deg": 1,
+        "gradient_rgb": [
+          [
+            0,
+            0,
+            255
+          ],
+          [
+            255,
+            0,
+            0
+          ]
+        ],
+        "other_half_srgb": 112,
+        "probe_bar_width_deg": 0.14,
+        "probe_bar_srgb": 242,
+        "highlight_bar_width_deg": 0.26,
+        "response_bar_width_deg": 0.14,
+        "true_bar_width_deg": 0.22,
+        "true_bar_rgb": [
+          47,
+          196,
+          47
+        ],
+        "click_band_deg": 1.125
+      }
+    }
+  },
+  "trial_types": {
+    "_note": "Named trial phase lists (author decision 1.5 and the review of 2026-10-02): the blocks section names the trial type each block runs. Every list starts with the stimulus phase; response phases follow; a feedback phase may follow any response phase and runs only in the block types it names (train; test trials carry no feedback time, decision 63). Feedback (author, 2026-10-02 evening): one feedback screen right after the betting range (the number line with the estimation disc, the range bar, the true count's position in green and the range points) and one after the scaling response (the scaling arc with the scaling disc, the true percentile's position in green, the scaling points and the total); each screen shows the responses made since the previous feedback. Each rewarded phase is paid by its own rule against the target of its own space. Response windows 2.5 / 3 / 2.5 s (author, 2026-10-03, decision 57). cursor_start (decisions 4, 79): the cursor is placed at the screen centre on the estimation and scaling screens and continues from the estimation click on the betting screen. The betting range (interval phase, method two_clicks_and_button): the participant clicks the two ends on the number line, then the round betting button below the line; until the button is pressed a new click on the line starts a new range whose other end must be clicked again; the window's end without the button is a miss; with must_contain_anchor a confirmed range that leaves out the estimation response is a miss (author, 2026-10-02). A miss (any response window that ends without a response, or a range that leaves out the estimation response) ends the trial's responses, voids every reward of the trial and deducts reward.miss_penalty_points; the fixation mark turns yellow once for missing_response.mark_ms, then the black mark follows until the next pre-cue; no later response phase and no feedback screen of the trial runs (author, 2026-10-03, decisions 53, 54, 63). Revised 2026-10-04: the betting button is a 2.2-deg disc with the word OK (text.betting_button) at [0, 3] deg from the middle of the number line, i.e. at the screen centre where the fixation mark is (decisions 94, 96); the range feedback writes the range points large at the centre with the word 'points' (show.points_large, decision 103); the scaling feedback shows only the green bar, no points and no total (decisions 119, 121: the scaling response earns no points of its own; its block's errors set the block multiplier).",
+    "full": [
+      {
+        "type": "stimulus"
+      },
+      {
+        "type": "point",
+        "name": "estimation",
+        "space": "count",
+        "window_ms": 2500,
+        "cursor_start": "centre",
+        "reward": "none"
+      },
+      {
+        "type": "interval",
+        "name": "betting",
+        "space": "count",
+        "window_ms": 3500,
+        "cursor_start": "continue",
+        "reward": "range",
+        "anchor": "estimation",
+        "on_timeout": "missing",
+        "method": "two_clicks_and_button",
+        "must_contain_anchor": true,
+        "button": {
+          "offset_deg": [
+            0,
+            3
+          ],
+          "diameter_deg": 2.2,
+          "label": "betting_button",
+          "label_font_deg": 0.75,
+          "label_on_dark_srgb": 255,
+          "label_on_light_srgb": 17
+        }
+      },
+      {
+        "type": "feedback",
+        "name": "feedback_range",
+        "duration_ms": 1000,
+        "in_block_types": [
+          "train"
+        ],
+        "show": {
+          "true_position": true,
+          "range_points": true,
+          "scaling_points": false,
+          "total": false,
+          "points_large": true
+        }
+      },
+      {
+        "type": "point",
+        "name": "scaling",
+        "space": "rho",
+        "window_ms": 2500,
+        "cursor_start": "centre",
+        "reward": "scaling"
+      },
+      {
+        "type": "feedback",
+        "name": "feedback_scaling",
+        "duration_ms": 1000,
+        "in_block_types": [
+          "train"
+        ],
+        "show": {
+          "true_position": true,
+          "range_points": false,
+          "scaling_points": false,
+          "total": false,
+          "points_large": false
+        }
+      }
+    ],
+    "estimation_betting": [
+      {
+        "type": "stimulus"
+      },
+      {
+        "type": "point",
+        "name": "estimation",
+        "space": "count",
+        "window_ms": 2500,
+        "cursor_start": "centre",
+        "reward": "none"
+      },
+      {
+        "type": "interval",
+        "name": "betting",
+        "space": "count",
+        "window_ms": 3500,
+        "cursor_start": "continue",
+        "reward": "range",
+        "anchor": "estimation",
+        "on_timeout": "missing",
+        "method": "two_clicks_and_button",
+        "must_contain_anchor": true,
+        "button": {
+          "offset_deg": [
+            0,
+            3
+          ],
+          "diameter_deg": 2.2,
+          "label": "betting_button",
+          "label_font_deg": 0.75,
+          "label_on_dark_srgb": 255,
+          "label_on_light_srgb": 17
+        }
+      },
+      {
+        "type": "feedback",
+        "name": "feedback_range",
+        "duration_ms": 1000,
+        "in_block_types": [
+          "train"
+        ],
+        "show": {
+          "true_position": true,
+          "range_points": true,
+          "scaling_points": false,
+          "total": false,
+          "points_large": true
+        }
+      }
+    ],
+    "scaling": [
+      {
+        "type": "stimulus"
+      },
+      {
+        "type": "point",
+        "name": "scaling",
+        "space": "rho",
+        "window_ms": 2500,
+        "cursor_start": "centre",
+        "reward": "scaling"
+      },
+      {
+        "type": "feedback",
+        "name": "feedback_scaling",
+        "duration_ms": 1000,
+        "in_block_types": [
+          "train"
+        ],
+        "show": {
+          "true_position": true,
+          "range_points": false,
+          "scaling_points": false,
+          "total": false,
+          "points_large": false
+        }
+      }
+    ]
+  },
+  "reward": {
+    "_status": "Author 2026-10-06: base £4 per completed session, maximum total £6, target median total £5. The target is not an observed or guaranteed payment. Existing point anchors and square-root conversion retained pending N=10 Exp0 sanity check.",
+    "range": {
+      "rule": "hit_exponential",
+      "max_points": 50,
+      "best_length": 4,
+      "worst_length": 16,
+      "ratio": 4
+    },
+    "scaling": {
+      "rule": "block_multiplier",
+      "good_root_mean_squared_error": 0.1,
+      "poor_root_mean_squared_error": 0.25,
+      "max_factor": 2,
+      "min_factor": 0.5,
+      "miss_error": null,
+      "factor_decimals": 2
+    },
+    "points_decimals": 0,
+    "miss_penalty_points": 50,
+    "payment": {
+      "currency_symbol": "£",
+      "base": 4,
+      "max": 6,
+      "conversion": "square_root",
+      "anchor_none_per_trial": 4.7,
+      "anchor_best_per_trial": 58.2,
+      "decimals": 2,
+      "target_median": 5
+    }
+  },
+  "missing_response": {
+    "_note": "One miss rule (author, 2026-10-02): a miss is a response window that ends without a response (estimation, range or scaling) or a confirmed range that leaves out the estimation response. What follows (author, 2026-10-03, decisions 53, 54, 74): the fixation mark (the bullseye and cross) is shown in missing_rgb, alone on the background, once, for mark_ms; then the ordinary black mark follows until the next trial's pre-cue at its fixed time. No later response phase and no feedback screen of the trial runs; the trial's rewards are void and reward.miss_penalty_points is deducted. In the block types of deduction_in_block_types (train) the deducted points are written beside the yellow mark (text.feedback_miss, in response_display.points_negative_rgb) for the same mark_ms. When the yellow mark runs past the missed slot (mark_ms is longer than response_display.highlight_ms), the black interval before the next pre-cue may shorten to min_interval_after_mark_ms so the cloud keeps its time; the loader requires mark_ms <= highlight_ms + timing.iti_ms - min_interval_after_mark_ms.",
+    "mark_ms": 500,
+    "min_interval_after_mark_ms": 100,
+    "deduction_x_offset_deg": 1.6,
+    "deduction_font_deg": 1.3,
+    "excludes_anchor_note": {
+      "_note": "Author, 2026-10-05: after a range that leaves out the estimate, in the exercise blocks only, text.feedback_excludes_anchor is written under the yellow mark for the same mark_ms (no change to timing). A participant had finished the walkthrough correctly but 29 of 49 exercise ranges excluded their estimate.",
+      "block_types": [
+        "train"
+      ],
+      "y_offset_deg": 1.5
+    },
+    "deduction_in_block_types": [
+      "train"
+    ],
+    "missing_rgb": [
+      230,
+      200,
+      0
+    ]
+  },
+  "response_display": {
+    "_note": "Appearance and input rules shared by the response screens. Lengths in degrees of visual angle; colours are sRGB grey levels unless an [r, g, b] triple. Markers are discs (marker_diameter_deg); the betting range is a bar of range_bar_width_deg on the line with a disc at each end; a faint preview disc (preview_srgb) shows where a click would land, only within the click band of the widget (preview_in_band_only, decision 78); after a response its mark (or the range) brightens to highlight_srgb for highlight_ms before the next screen (author, 2026-10-03, decision 61: 0.3 s). The cursor: the real pointer is hidden with the pointer lock and a drawn cursor (cursor.*) follows the mouse; each response phase's cursor_start places it (centre: the screen centre; continue: where the previous response screen left it; random: a seeded position inside the stage margins, cursor.margin_deg), recorded; without the lock the real pointer is used and the record says so. On a screen whose cursor starts at the centre nothing marks a value and no click is taken until the cursor is reveal_after_move_deg from its start (decision 78). input_lockout_ms: presses during this time after a response screen appears are ignored and counted. Every points number - the live number of the betting screen, the feedback lines and the deduction beside the yellow mark - is coloured by its sign: above 0 in points_positive_rgb (green), below 0 in points_negative_rgb (red), 0 in the text grey (author, 2026-10-02 evening). After the visual review of 2026-10-04 (orchestrator's fix, provisional until the author sees it): every coloured element - each coloured points number and the true-position marker - is drawn over a thin outline in outline_srgb, outline_width_deg beyond its edge (the green and the red have about 1.3:1 luminance contrast against the grey of sRGB 128, the black outline about 5.3:1; the hues are unchanged). The true-position marker lies in its own lane: a green disc true_position_offset_deg from the widget (above the number line; inside the scaling arc, true_position_arc_side) joined to the exact true position on the widget by a green tick true_position_tick_width_deg wide, so the disc never covers the participant's marks. Revised 2026-10-04: the live points number under the OK button is 1.25 deg tall (decision 102); the fixation mark is drawn on the estimation and scaling screens (decision 96); the large feedback points are 3 deg tall at the centre with the word 'points' under them (decision 103). The ring ignored around the betting button is 0.3 deg (0.5 before 2026-10-04): with the button at the centre, 3 deg below the line, its top then lies 1.6 deg below the line, outside the 1.5-deg click band (checked by the loader).",
+    "line_width_deg": 0.08,
+    "tick_length_deg": 0.4,
+    "font_deg": 0.8,
+    "marker_srgb": 0,
+    "text_offset_deg": 2.5,
+    "input_lockout_ms": 300,
+    "click_band_deg": 1.5,
+    "button_margin_deg": 0.3,
+    "live_points_font_deg": 1.25,
+    "fixation_on_point_screens": true,
+    "feedback_points": {
+      "font_deg": 3.0,
+      "y_offset_deg": 0.2,
+      "word_font_deg": 0.9,
+      "word_y_offset_deg": 2.3
+    },
+    "marker_diameter_deg": 0.6,
+    "preview_srgb": 96,
+    "preview_in_band_only": true,
+    "reveal_after_move_deg": 0.25,
+    "highlight_ms": 300,
+    "highlight_srgb": 255,
+    "range_bar_width_deg": 0.25,
+    "true_position_rgb": [
+      47,
+      196,
+      47
+    ],
+    "points_positive_rgb": [
+      47,
+      196,
+      47
+    ],
+    "points_negative_rgb": [
+      255,
+      74,
+      61
+    ],
+    "outline_srgb": 0,
+    "outline_width_deg": 0.05,
+    "outline_text_fraction": 0.09,
+    "outline_rgb": {
+      "positive_rgb": [
+        11,
+        58,
+        11
+      ],
+      "negative_rgb": [
+        58,
+        11,
+        11
+      ],
+      "other_rgb": [
+        58,
+        48,
+        0
+      ]
+    },
+    "anchor_srgb": 96,
+    "range_end_diameter_deg": 0.45,
+    "true_position_offset_deg": 1.0,
+    "true_position_tick_width_deg": 0.08,
+    "true_position_arc_side": "inside",
+    "cursor": {
+      "shape": "arrow",
+      "size_deg": 0.8,
+      "srgb": 255,
+      "margin_deg": 2.0
+    }
+  },
+  "text": {
+    "_note": "Participant wording revised 2026-10-06: Estimate, Choose a range, and Compare. Compare asks about other pictures with fewer dots relative to the pattern shown at the start; the target remains the reference CDF, not the empirical rank of displayed trials. Identifiers and recorded field names are unchanged. Text outside this section is research/operator metadata, not participant copy.",
+    "en": {
+      "estimation_prompt": "",
+      "betting_prompt": "",
+      "scaling_prompt": "",
+      "hit_points": "{points}",
+      "scaling_ends": [
+        "Smaller",
+        "Larger"
+      ],
+      "feedback_range": "Reward: {points} points",
+      "feedback_scaling": "Reward: {points} points",
+      "feedback_miss": "{points}",
+      "feedback_excludes_anchor": "Your range must include your estimate.",
+      "feedback_total": "Total: {points} points",
+      "missing": "No response",
+      "block_labels": {
+        "estimation_betting": "Estimate and choose a range",
+        "scaling": "Compare",
+        "full": "All three steps"
+      },
+      "block_kinds": {
+        "train": "Practice",
+        "test": "Main section"
+      },
+      "screen_block_intro": "{kind} {kind_block} of {kind_blocks} · {label}",
+      "screen_block_intro_test_heading": "{kind} {kind_block} of {kind_blocks}",
+      "screen_block_intro_train": "The correct answer is shown in green.",
+      "screen_block_intro_test": "",
+      "screen_start": "Start",
+      "screen_start_countdown": "Start in {seconds} s",
+      "screen_start_again": "Please press Start again.",
+      "distribution_ends": [
+        "Fewer dots",
+        "More dots"
+      ],
+      "distribution_height": "How often",
+      "distribution_caption": "This graph shows which numbers of dots are more common.",
+      "screen_rest": "{kind} {kind_block} of {kind_blocks} finished",
+      "screen_block_points": "points in this section",
+      "screen_rest_note": "Take a short rest.",
+      "screen_continue": "Continue",
+      "screen_countdown": "Continue in {seconds} s",
+      "screen_end": "Session finished. Thank you!",
+      "screen_stopped": "The session has ended early",
+      "betting_button": "OK",
+      "feedback_points_word": "points",
+      "slide_next": "Next",
+      "slide_back": "Back",
+      "slides": {
+        "common": {
+          "part": "",
+          "slides": {
+            "welcome": {
+              "title": "Welcome",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "On each trial, **dots** appear briefly. You then answer about the **number of dots**."
+                },
+                {
+                  "style": "body",
+                  "text": "[pill]{n_exercise_blocks} practice sections[/pill], then [pill]{n_main_blocks} main sections[/pill]. Each main section has about {block_minutes} minutes of task time."
+                },
+                {
+                  "style": "body",
+                  "text": "Task time: about {task_minutes} minutes {task_seconds} seconds, plus instructions, breaks, and short questions."
+                }
+              ]
+            },
+            "distribution": {
+              "title": "Numbers of dots in this session",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "This graph shows which numbers of dots are more common in this session."
+                },
+                {
+                  "style": "body",
+                  "text": "Do not count the dots."
+                }
+              ]
+            },
+            "center": {
+              "title": "Keep your eyes on the center",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "The center mark turns **white** just before the dots appear."
+                },
+                {
+                  "style": "body",
+                  "text": "Answering faster does not shorten the session."
+                }
+              ]
+            },
+            "time_limits": {
+              "title": "Time limits",
+              "body": [
+                {
+                  "rows": [
+                    [
+                      "[pill]{estimation_s} s[/pill]",
+                      "**Estimate**"
+                    ],
+                    [
+                      "[pill]{betting_s} s[/pill]",
+                      "**Choose a range**"
+                    ],
+                    [
+                      "[pill]{scaling_s} s[/pill]",
+                      "**Compare**"
+                    ]
+                  ]
+                },
+                {
+                  "style": "body",
+                  "text": "A missed or invalid answer ends the trial: that trial earns no points and costs [red]−{miss_points}[/red]. The center mark turns [yellow]yellow[/yellow]."
+                }
+              ]
+            }
+          }
+        },
+        "guess_range": {
+          "part": "",
+          "slides": {
+            "guess": {
+              "title": "Estimate",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "Click your **estimate** of the number of dots on the line."
+                },
+                {
+                  "style": "body",
+                  "text": "Further right means more dots."
+                }
+              ]
+            },
+            "range": {
+              "title": "Choose a range",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "Click the two ends of a **range**, then click [pill]{betting_button}[/pill]. The range must include your estimate."
+                },
+                {
+                  "style": "small",
+                  "text": "Use two separate clicks, one at each end, not a double click."
+                },
+                {
+                  "style": "body",
+                  "text": "If the correct answer is inside the range, you earn points: the narrower, the more, up to [green]{range_max_points}[/green]. The number under {betting_button} shows them."
+                }
+              ]
+            },
+            "feedback": {
+              "title": "Practice sections",
+              "next": "Start practice",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "In practice sections, the [green]correct answer[/green] is shown in green."
+                },
+                {
+                  "style": "body",
+                  "text": "Practice points are not paid."
+                }
+              ]
+            }
+          }
+        },
+        "ring": {
+          "part": "",
+          "slides": {
+            "ring": {
+              "title": "Compare",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "Using the pattern shown at the start, what **percentage of other dot pictures would have fewer dots** than this one? Click your answer on the colored half of the ring."
+                },
+                {
+                  "style": "body",
+                  "text": "Smaller end = 0 %: none would have fewer dots. Larger end = 100 %: all would have fewer dots."
+                },
+                {
+                  "style": "small",
+                  "text": "The end words change place from trial to trial."
+                }
+              ]
+            },
+            "multiplier": {
+              "title": "How your score changes",
+              "next": "Quick check",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "Your Compare answers adjust the points from your ranges in that section: [green]×{max_factor}[/green] when your answers are close to the correct answers, down to [pill]×{min_factor}[/pill] when they are far off."
+                }
+              ]
+            }
+          }
+        },
+        "all_three": {
+          "part": "",
+          "slides": {
+            "all_three": {
+              "title": "All three steps",
+              "next": "Start practice",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "From now on, each trial has all three steps:"
+                },
+                {
+                  "style": "body",
+                  "text": "[pill]Estimate[/pill] → [pill]Choose a range[/pill] → [pill]Compare[/pill]"
+                }
+              ]
+            }
+          }
+        },
+        "main": {
+          "part": "",
+          "slides": {
+            "main_blocks": {
+              "title": "Main sections",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "Main sections are like the last practice section, but the correct answer is not shown."
+                }
+              ]
+            },
+            "payment": {
+              "title": "Your payment",
+              "body": [
+                {
+                  "rows": [
+                    [
+                      "Base for finishing",
+                      "**{currency}{base}**"
+                    ],
+                    [
+                      "Bonus from main sections",
+                      "[green]up to {currency}{bonus_max}[/green]"
+                    ]
+                  ]
+                },
+                {
+                  "style": "body",
+                  "text": "The more points, the bigger the bonus."
+                },
+                {
+                  "style": "body",
+                  "text": "We aim for a typical total payment of {currency}{target_median}. Your total depends on your performance."
+                }
+              ]
+            },
+            "stop": {
+              "title": "Missed answers in main sections",
+              "next": "Start main sections",
+              "body": [
+                {
+                  "style": "lead",
+                  "text": "If you miss [pill]{stop_misses}[/pill] answers in one main section, the session ends early, and you are paid £6 per hour for the time you spent, with no bonus."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "check": {
+        "title": "Quick check",
+        "body": "Click where **{check_percent} %** of other pictures would have fewer dots.",
+        "correct": "Correct",
+        "wrong": "Not quite: the correct answer is in green.",
+        "wrong_note": "Please read the explanation again.",
+        "return_note": "If you would rather not go on, you may return the study on Prolific."
+      },
+      "rest": {
+        "factor_big": "×{factor}",
+        "factor_word": "score adjustment",
+        "factor_note": "",
+        "range_points": "Range points **{points}**",
+        "factor_line": "× {factor} score adjustment",
+        "misses": "Missed answers [red]−{points}[/red]",
+        "exercise_total": "Practice total: **{points}** points · not paid",
+        "main_total": "Total so far: **{points}** points · bonus so far [green]{currency}{bonus}[/green]"
+      },
+      "end": {
+        "amount": "{currency}{base} + [green]{currency}{bonus}[/green] = {currency}{total}",
+        "note": "base + bonus from {points} points",
+        "button": "Back to Prolific"
+      },
+      "stop": {
+        "lines": [
+          "{stop_misses} answers were missed in one main section, so the session has ended.",
+          "Please return your submission on Prolific. You will be paid £6 per hour for the time you spent."
+        ],
+        "reload_lines": [
+          "The page was reloaded or opened again, so the session has ended early.",
+          "Please return your submission on Prolific. You will be paid £6 per hour for the time you spent."
+        ],
+        "resume_limit_lines": [
+          "You were away from the task for too long, so the session has ended early.",
+          "Please return your submission on Prolific. You will be paid £6 per hour for the time you spent."
+        ],
+        "interruption_lines": [
+          "The task was left twice (full screen, another window or tab, or a reload), so the experiment has ended.",
+          "No completion code is given and no payment is made. Please return your submission on Prolific."
+        ],
+        "error_lines": [
+          "A technical problem has ended the session early. This is not your fault.",
+          "Please return your submission on Prolific. You will be paid £6 per hour for the time you spent."
+        ],
+        "betting_lines": [
+          "Most of your ranges were not confirmed again, so the session has ended.",
+          "Please return your submission on Prolific. You will be paid £6 per hour for the time you spent."
+        ],
+        "button": "Back to Prolific"
+      },
+      "betting_check": {
+        "lines": [
+          "Most of your ranges were not confirmed. Please read the explanation again."
+        ],
+        "button": "Continue"
+      },
+      "betting_walkthrough": {
+        "intro": "Try it. The grey dot is an example estimate.",
+        "left": "Click the left end of your range.",
+        "right": "Click the right end.",
+        "ok": "Now click {betting_button}.",
+        "done": "Done.",
+        "same_place": "Both clicks were at one place. Click two separate places.",
+        "excludes": "The range must include the estimate. Try again.",
+        "gave_up": "Let's go on. You will practise in the first practice block."
+      },
+      "online": {
+        "missing_id": [
+          "This page must be opened from the study link on Prolific.",
+          "Please go back to Prolific and open the study from there."
+        ],
+        "missing_codes": [
+          "This study link is not set up correctly, so the study cannot start."
+        ],
+        "start_failed": [
+          "The study could not start on this computer."
+        ],
+        "help": [
+          "If you cannot go on, please return your submission on Prolific and send us a message through Prolific."
+        ],
+        "leave_warning": {
+          "title": "Stay on this page",
+          "lines": [
+            "The study runs in full screen.",
+            "Until the end, please do not leave full screen, do not switch to another window, tab or program, and do not reload or close the page.",
+            "The first time this happens, come back within {max_gap_minutes} minutes in the same browser: the block you were in starts again from its beginning.",
+            "**The second time, the experiment ends without payment.**"
+          ],
+          "checkbox": "I have read this.",
+          "button": "Continue"
+        },
+        "fullscreen": {
+          "part": "",
+          "title": "Full screen",
+          "button": "Go to full screen",
+          "body": [
+            {
+              "style": "lead",
+              "text": "The study runs in full screen. Please do not press **Esc**."
+            },
+            {
+              "style": "body",
+              "text": "Leaving full screen, switching to another window or tab, or reloading the page interrupts the task. The first time, the unfinished block restarts from its beginning; **the second time, the experiment ends without payment.**"
+            },
+            {
+              "style": "body",
+              "text": "If you see _“Please press Start again”_, press Start again."
+            }
+          ]
+        },
+        "consent": {
+          "title": "Information and consent",
+          "summary": "**Study:** Judging numbers of dots (Seoul National University). **Task time:** about {minutes} minutes, plus instructions, breaks, and short questions. **Payment:** {currency}{base} for finishing, plus a bonus of up to {currency}{bonus_max}.",
+          "checkbox": "I have read the information above and agree to take part.",
+          "agree": "I agree",
+          "disagree": "I do not agree"
+        },
+        "no_consent": {
+          "title": "You chose not to take part",
+          "lines": [
+            "Thank you for your interest.",
+            "Please return your submission on Prolific."
+          ],
+          "button": "Back to Prolific"
+        },
+        "device_refused": {
+          "title": "We are sorry: this computer cannot be used",
+          "lines": [
+            "We are very sorry. This task requires a mouse, a 60 Hz display, and enough screen space to show the dots and response controls.",
+            "This computer or its screen does not meet these requirements. Thank you very much for your interest and your time, and please return your submission on Prolific."
+          ],
+          "button": "Back to Prolific"
+        },
+        "sit_closer": {
+          "title": "Please sit a little closer",
+          "lines": [
+            "At the distance just measured, the task does not fit on your screen.",
+            "Please move closer to the screen, to about {distance_cm} cm or less, keep that position for the whole study, and measure the distance again."
+          ],
+          "button": "Measure again"
+        },
+        "zoom_check": {
+          "title": "Check the browser zoom",
+          "lines": [
+            "Your screen looks too small for this study. This often happens when the browser zoom is not 100%.",
+            "Please set the zoom to 100%: press **Ctrl+0** on Windows or **Cmd+0** on a Mac.",
+            "If you use more than one screen, move this window to your main, high-resolution screen.",
+            "**Until the end of the study**, keep the zoom at 100% and do not let the screen turn off or the computer go to sleep (for a laptop, plug it in). If the zoom changes or the screen turns off during the study, the task may be interrupted or stop, and you may not receive the full completion payment.",
+            "Then press **Check again**."
+          ],
+          "button": "Check again"
+        },
+        "card_again": {
+          "title": "Check the card once more",
+          "lines": [
+            "At the screen size just measured, the task does not fit on your screen.",
+            "Please match the card once more: hold a real card against the screen and match its width exactly."
+          ],
+          "button": "Continue"
+        },
+        "move_closer": {
+          "title": "Please keep a fixed distance from the screen",
+          "lines": [
+            "For the pictures to fit on your screen, please sit about **{distance_cm} cm** from the screen and keep that same distance for the whole study.",
+            "Recommended distance for common setups:"
+          ],
+          "rows": [
+            ["Screen", "Distance"],
+            ["13-inch laptop, 1920 × 1080", "about 55 cm"],
+            ["14- to 17-inch laptop or MacBook, 1920 × 1080 or higher", "about 60 cm"],
+            ["21- to 27-inch monitor, 1920 × 1080 or higher", "about 60 cm"]
+          ],
+          "button": "Continue"
+        },
+        "resume": {
+          "title": "Welcome back",
+          "lines": [
+            "The session continues at block {block} of {n_blocks}.",
+            "The block you were in starts again from its beginning.",
+            "**If you leave the task once more, the experiment ends without payment.**"
+          ],
+          "button": "Continue"
+        },
+        "pause": {
+          "title": "The task has paused",
+          "lines": [
+            "The page left full screen, or another window was opened.",
+            "Press the button to return to full screen. The block starts again from its beginning.",
+            "**If you leave the task once more, the experiment ends without payment.**"
+          ],
+          "button": "Return to full screen"
+        },
+        "other_tab": [
+          "The study is already open in another tab or window. Please close this one."
+        ],
+        "other_browser": {
+          "lines": [
+            "The study was started in another browser or on another computer. Please open it again there, from Prolific.",
+            "If you cannot, press the button below. The session then ends, and you are paid £6 per hour for the time you spent."
+          ],
+          "button": "End the session"
+        },
+        "chinrest": {
+          "card_title": "Screen size",
+          "card_body": "Hold a credit card (or any card of that size) against the screen. If the gray card already matches, press Next. Otherwise, use the slider to match its width, then press Next.",
+          "blind_title": "Viewing distance",
+          "blind_body": [
+            "Sit as you will sit during the study. Close your **right eye** and look at the black square with your left eye.",
+            "A red dot moves to the left. Keep looking at the square and press the **space bar** as soon as the dot disappears.",
+            "This is done {repetitions} times."
+          ],
+          "blind_start": "Start",
+          "blind_progress": "{done} of {total}",
+          "blind_again": "That did not work. Please try again, keeping your eyes on the square.",
+          "next": "Next"
+        },
+        "saving": {
+          "saving": "Saving your answers…",
+          "saved": "Your answers are saved.",
+          "retrying": "Your answers could not be sent yet. Please keep this window open; trying again.",
+          "failed": [
+            "Your answers could not be sent to the server.",
+            "A copy is kept in this browser and has been downloaded as a file. Please keep the file and send us a message on Prolific."
+          ],
+          "countdown": "Saving attempt: {seconds} s remaining."
+        },
+        "redirect": {
+          "lines": [
+            "Thank you. You will now be taken back to Prolific."
+          ],
+          "link": "If nothing happens, click here to go back to Prolific.",
+          "code_line": "If you are not taken back, enter this completion code on Prolific: **{code}**"
+        }
+      },
+      "survey": {
+        "title": "Quick questions",
+        "unseen": "Were there any trials in which you could not see the dots at all?",
+        "unseen_count": "How many times did this happen?",
+        "difficulty": "How difficult was the task?",
+        "difficulty_options": [
+          "Very easy",
+          "Easy",
+          "Neither easy nor difficult",
+          "Difficult",
+          "Very difficult"
+        ],
+        "uncertainty": "Did your betting ranges reflect uncertainty in your estimates?",
+        "yes": "Yes",
+        "no": "No",
+        "button": "Continue"
+      }
+    }
+  },
+  "blocks": {
+    "_note": "The practice study's blocks (decision 95): the three exercise (train) blocks in stored order, then 3 main (test) blocks: the first 3 of the participant's permuted order of the 9 stored test blocks. Everything else as in exp1.json (block clock, rest and intro screens, distribution picture, early stop after 5 misses in a main block).",
+    "train_trial_types": [
+      "estimation_betting",
+      "scaling",
+      "full"
+    ],
+    "test_trial_type": "full",
+    "runs": {
+      "session": {
+        "train_block_indices": [
+          0,
+          1,
+          2
+        ],
+        "n_test_blocks": 3
+      },
+      "pilot": {
+        "train_block_indices": [
+          0,
+          1,
+          2
+        ],
+        "n_test_blocks": 1
+      }
+    },
+    "rest_min_ms": 5000,
+    "intro_min_ms": 1000,
+    "lead_in_ms": 1000,
+    "align_trials": true,
+    "clock_reset_after_ms": 300,
+    "lock_attempts": 2,
+    "lock_wait_ms": 3000,
+    "_lock_wait_ms_note": "2026-10-12: a Start press waits at most this long for the browser to grant or refuse the pointer lock; no answer counts as a refused request (lock_attempts), and a lock granted later is released. Before this key a browser that answered neither way left the Start button disabled.",
+    "block_total": true,
+    "paid_block_kinds": [
+      "test"
+    ],
+    "stop_rule": {
+      "block_kinds": [
+        "test"
+      ],
+      "max_misses": 5
+    },
+    "betting_check": {
+      "trial_type": "estimation_betting",
+      "phase": "betting",
+      "min_missed_fraction": 0.5,
+      "max_repeats": 1,
+      "slide_group": "guess_range"
+    },
+    "show_distribution": true,
+    "distribution_picture": {
+      "width_deg": 12,
+      "height_deg": 4.2,
+      "fill_srgb": 96,
+      "line_srgb": 0,
+      "y_offset_deg": -3.9
+    }
+  },
+  "instructions": {
+    "_note": "The instruction slides (author, 2026-10-04, decisions 93, 98, 100, 101, 104, 106-112): five groups shown in every session, each placed before the first block it explains; Next active 1 s after a slide appears, Back within a group; the comprehension check on the real ring after the ring group (click 30 %, within 0.10 passes; a wrong answer shows the green bar, then the ring slides and the question again); the stills are drawn by the experiment's own drawing code at the participant's geometry. The strings are text.en.slides and text.en.check.",
+    "min_ms": 1000,
+    "back_within_group": true,
+    "groups": [
+      {
+        "id": "common",
+        "anchor": {
+          "at": "session_start"
+        },
+        "slides": [
+          {
+            "id": "welcome",
+            "picture": "cloud"
+          },
+          {
+            "id": "distribution",
+            "picture": "distribution"
+          },
+          {
+            "id": "center",
+            "picture": "precue"
+          },
+          {
+            "id": "time_limits",
+            "picture": "miss"
+          }
+        ]
+      },
+      {
+        "id": "guess_range",
+        "anchor": {
+          "at": "before_first_block_of_trial_type",
+          "trial_type": "estimation_betting"
+        },
+        "slides": [
+          {
+            "id": "guess",
+            "picture": "guess"
+          },
+          {
+            "id": "range",
+            "picture": "range"
+          },
+          {
+            "id": "feedback",
+            "picture": "range_feedback"
+          }
+        ]
+      },
+      {
+        "id": "ring",
+        "anchor": {
+          "at": "before_first_block_of_trial_type",
+          "trial_type": "scaling"
+        },
+        "slides": [
+          {
+            "id": "ring",
+            "picture": "ring"
+          },
+          {
+            "id": "multiplier",
+            "picture": "ring_feedback"
+          }
+        ]
+      },
+      {
+        "id": "all_three",
+        "anchor": {
+          "at": "before_first_block_of_trial_type",
+          "trial_type": "full"
+        },
+        "slides": [
+          {
+            "id": "all_three",
+            "picture": "cloud"
+          }
+        ]
+      },
+      {
+        "id": "main",
+        "anchor": {
+          "at": "before_first_block_of_kind",
+          "kind": "test"
+        },
+        "slides": [
+          {
+            "id": "main_blocks",
+            "picture": "ring"
+          },
+          {
+            "id": "payment",
+            "picture": null
+          },
+          {
+            "id": "stop",
+            "picture": null
+          }
+        ]
+      }
+    ],
+    "check": {
+      "group": "ring",
+      "target": 0.3,
+      "tolerance": 0.1,
+      "orientation_deg": 20,
+      "centre_y_offset_deg": 2,
+      "result_ms": 2200,
+      "result_font_deg": 1.2,
+      "result_y_offset_deg": -6,
+      "note_font_deg": 0.95,
+      "note_y_offset_deg": -4.6,
+      "max_attempts": null,
+      "return_note_after_failures": 3
+    },
+    "betting_walkthrough": {
+      "group": "guess_range",
+      "after_slide": "range",
+      "trial_type": "estimation_betting",
+      "phase": "betting",
+      "estimate": 40,
+      "max_tries": 3
+    },
+    "stills": {
+      "window_deg": 13,
+      "centre_y_offset_deg": 1.2,
+      "line_half_length_deg": 6.3,
+      "mark_scale": 3,
+      "ring_scale": 1.15,
+      "cloud": {
+        "count": 46,
+        "image_index": 4
+      },
+      "estimation": 48,
+      "range": [
+        45,
+        52
+      ],
+      "true_count": 46,
+      "ring_orientation_deg": 10,
+      "ring_response": 0.62,
+      "ring_true": 0.7
+    }
+  },
+  "text_screens": {
+    "_note": "Layout of the text screens after the demo (decisions 97, 102, 104): sizes of text in text units t = max(1 deg in px, min(window width / 40, 30 px), 15 px), places in degrees; one button place at the bottom centre; a narrow window stacks the text above the picture.",
+    "text_unit": {
+      "width_divisor": 40,
+      "max_px": 30,
+      "min_px": 15
+    },
+    "title_t": 1.75,
+    "lead_t": 1.25,
+    "body_t": 1.12,
+    "small_t": 0.92,
+    "line_height": 1.4,
+    "big_number_t": 3.9,
+    "column": {
+      "left_deg": 3.6,
+      "top_deg": 2.8,
+      "width_deg": 23.5,
+      "max_width_fraction": 0.5,
+      "wide_width_deg": 42,
+      "wide_max_width_fraction": 0.86
+    },
+    "picture": {
+      "size_deg": 17.5,
+      "max_width_fraction": 0.38,
+      "right_deg": 2.4
+    },
+    "button": {
+      "height_t": 2.3,
+      "min_width_t": 6.8,
+      "bottom_t": 2.3,
+      "font_t": 1
+    },
+    "narrow": {
+      "aspect_below": 1.45,
+      "width_below_px": 1000
+    }
+  },
+  "session": {
+    "_status": "2026-10-06: pure scheduled task time at 60 Hz is 1818 seconds (30 min 18 s), sum(block.fixed_trial_ms * block.n_trials) for one full session. Both minute fields round this up. Excludes setup, instructions, block introductions, lead-in correction, breaks, repeats, and final survey; does not promise wall-clock completion time.",
+    "estimated_minutes": 31,
+    "listed_minutes": 31
+  },
+  "_pilot": [
+    "stimulus.cloud.reference_dot_diameter_deg",
+    "stimulus.cloud.reference_field_radius_deg",
+    "stimulus.cloud.size_range_factor",
+    "stimulus.cloud.spacing_range_factor",
+    "stimulus.cloud.min_centre_distance_diameters",
+    "stimulus.cloud.dot_srgb",
+    "stimulus.fixation.outer_diameter_deg",
+    "stimulus.fixation.pre_stimulus_srgb",
+    "timing.iti_ms",
+    "timing.fixation_ms",
+    "timing.exposure_ms",
+    "timing.fullscreen_settle_frames",
+    "timing.fullscreen_settle_max_ms",
+    "spaces.count.axis",
+    "spaces.count.length_fraction_of_width",
+    "spaces.count.probe_number",
+    "spaces.rho.radius_deg",
+    "spaces.rho.arc_deg",
+    "spaces.rho.orientation_deg",
+    "spaces.rho.direction",
+    "reward.range",
+    "reward.scaling",
+    "reward.miss_penalty_points",
+    "reward.payment.anchor_none_per_trial",
+    "reward.payment.anchor_best_per_trial",
+    "missing_response.mark_ms",
+    "missing_response.min_interval_after_mark_ms",
+    "missing_response.missing_rgb",
+    "response_display.input_lockout_ms",
+    "response_display.highlight_ms",
+    "response_display.reveal_after_move_deg",
+    "response_display.preview_in_band_only",
+    "response_display.cursor",
+    "response_display.marker_diameter_deg",
+    "response_display.outline_srgb",
+    "response_display.outline_width_deg",
+    "response_display.true_position_offset_deg",
+    "response_display.true_position_tick_width_deg",
+    "response_display.true_position_arc_side",
+    "blocks.lead_in_ms",
+    "blocks.clock_reset_after_ms",
+    "blocks.distribution_picture",
+    "text.en.distribution_caption",
+    "spaces.rho.ring",
+    "response_display.feedback_points",
+    "response_display.live_points_font_deg",
+    "instructions.check",
+    "instructions.stills",
+    "text_screens",
+    "timing.backward_mask"
+  ],
+  "design_version": "numerosity-shared-timing-2026-10-06-r3"
+}

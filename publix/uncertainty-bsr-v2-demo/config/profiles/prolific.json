@@ -1,0 +1,111 @@
+{
+ "_README": "Online profile: a desktop or laptop computer with a mouse (fine pointer and hover), Chrome, Edge or Firefox (device.browser_engines, author 2026-10-15), full screen, a 60 Hz display, and at least 1920 x 1080 physical (backing-store) pixels, on the screen before consent and in the full-screen window at the start (within 2 px of rounding). Native panel resolution cannot be verified by browser APIs. Author, 2026-10-14: no viewing distance, no visual angle, no card, no physical-diagonal check: the geometry of every run is the experiment file's reference layout (display.sizing) scaled to the full-screen window, which fits every window of at least the minimums by construction. Author, 2026-10-12, retry first, refuse last: a screen too small for its size alone gets the zoom screen and device.zoom_retries new checks. Existing runs use their saved profile and configuration snapshots.",
+ "profile": "prolific",
+ "backend": "jatos",
+ "geometry": {
+  "source": "pixel",
+  "screen_width_cm": null,
+  "screen_width_css_px": null,
+  "viewing_distance_cm": null,
+  "expected_device_pixel_ratio": null
+ },
+ "refresh": {
+  "expected_hz": null,
+  "tolerance_hz": null
+ },
+ "language": "en",
+ "operator_panel": false,
+ "online": {
+  "address_parameters": {
+   "participant_id": "PROLIFIC_PID",
+   "study_id": "STUDY_ID",
+   "session_id": "SESSION_ID",
+   "study_key": "study_key",
+   "wave": "wave"
+  },
+  "require_participant_id": true,
+  "study_key": {
+   "pattern": "^(exp[0-9]+|pilot_bsr)(?:_v[0-9]+)?(?:_[SL])?_s([0-9]+)$",
+   "_pattern_note_2026_10_29": "Uncertainty_BSR_v2 (author 2026-10-29: its own Prolific and JATOS studies): the optional _v<n> tag of a later pilot (pilot_bsr_v2_s1) is not part of the experiment name, so the key still names config/experiments/pilot_bsr.json, session 1, while its codes slot (pilot_bsr_v2_s1_w1) stays apart from v1's; no context is read from it (the server alternation assigns S or L, as in v1).",
+   "_pattern_note_2026_10_28": "Uncertainty_BSR_v1 (2026-10-28): one Prolific study per context, so S and L need their own study keys and code slots: pilot_bsr_S_s1 and pilot_bsr_L_s1 name config/experiments/pilot_bsr.json, session 1, and the page reads the context from the key (contextFromAddress, src/online/index.ts) when the address has no context parameter. pilot_bsr_s1 (with ?context=) still works for the demo.",
+   "_pattern_note": "2026-10-27 (nb/pilot-bsr-demo): pilot_bsr_s1 names config/experiments/pilot_bsr.json, session 1 (its context comes from the address parameter context, session.context_parameter of that file); exp0 and exp1 keys unchanged.",
+   "experiment_file": "config/experiments/{experiment}.json"
+  },
+  "counterbalance": {
+   "rule": "server_alternation",
+   "_rule_note": "Author, 2026-10-14: exact balance of the session order in one Prolific study per session. Session 1 takes the context with fewer assignments so far in the JATOS batch session (store context_order_<experiment>; ties: S) and stores it for the participant; Session 2 reads it back. One JATOS study, one batch and one link serve both sessions (ops/jatos/study.json), so they share the store. Without the batch session the hash of the participant identifier decides (the old rule, participant_hash) and the session file says so (online.counterbalance.used, .server.outcome). Set rule to participant_hash to go back to the hash alone.",
+   "salt": "numerosity_context_order_v1",
+   "contexts": [
+    "S",
+    "L"
+   ],
+   "server": {
+    "batch_key": "context_order",
+    "attempts": 6,
+    "retry_wait_ms": 300,
+    "deadline_ms": 10000
+   }
+  },
+  "consent": {
+   "file": "config/text/consent_en.html",
+   "require_checkbox": true
+  },
+  "device": {
+   "min_physical_width_px": 0,
+   "min_physical_height_px": 0,
+   "pointer": "fine",
+   "require_hover": true,
+   "desktop_only": true,
+   "browser_engines": [
+    "chromium",
+    "gecko",
+    "webkit"
+   ],
+   "_browser_engines_note": "Author, 2026-10-15: Chrome, Edge and Firefox only. The pixel sizing reads the browser zoom from devicePixelRatio, which Safari does not change under zoom. chromium = Chrome and Edge, gecko = Firefox; every other Chromium browser (Opera, Brave, Vivaldi, Chromium itself) reports the same engine and passes too, as does a Gecko browser that names itself Firefox. Detected from navigator.userAgentData.brands when present (Chromium browsers), else from the user-agent string (Safari has Safari/ and Version/ without Chrome/, Chromium/, CriOS, Edg/, Firefox/ or FxiOS). Safari, every WebKit-only browser and any engine not recognised are refused before consent as browser (device_refused:browser; the device-refused screen, unpaid like the other device refusals); the browser detected, its version and the brands read are in the device record (device.browser). Remove the key to let any browser in.",
+   "min_css_width_px": 0,
+   "min_css_height_px": 0,
+   "adaptive_layout": true,
+   "_minimums_note_2026_10_14": "Author, 2026-10-14: participation needs at least min_physical_width_px x min_physical_height_px physical pixels in the full-screen window too (start_check.window_size; refused as window_size). The 15.6-inch diagonal check (min_diagonal_inches) and the card are removed.",
+   "zoom_retries": 2,
+   "_zoom_retries_note": "Author, 2026-10-12: a device refused for the screen size alone (screen_width, screen_height) sees text.online.zoom_check (browser zoom at 100 %, Ctrl+0 or Cmd+0; the window on the main high-resolution screen) and is checked again after its button, at most this many times; refused only when the last check still fails. Chrome's devicePixelRatio includes the browser zoom, so 67 % and 90 % zoom refused real 1920 x 1080 screens in wave 9. Every check is in device.attempts. 0 = refused at once."
+  },
+  "saving": {
+   "_notes": "2026-10-12: every JATOS call may take call_floor_ms plus its bytes at call_bytes_per_s (a block line of about 1 MB: 8 s + 33 s) instead of the fixed end_wait_ms of earlier builds. A call past its deadline holds back the next call of its kind until jatos.js answers it (jatos.js retries each request itself, for up to about three minutes); the channel then takes calls again, so Retry saving can still succeed. final_wait_ms is the shortest final saving attempt and the longest wait for the last block sends; the attempt is extended while the final upload or its line is within its deadline (a run of 2026-10-05 reported a failure after 12 s although its file arrived). end_wait_ms bounds the wait for the end of the study before the redirect and every call of the refusal screens.",
+   "jatos_script": "jatos.js",
+   "jatos_path_marker": "/publix/",
+   "max_data_bytes": 4000000,
+   "load_timeout_ms": 5000,
+   "attempts": 3,
+   "retry_wait_ms": 2000,
+   "at_block_end": true,
+   "compress": true,
+   "final_wait_ms": 20000,
+   "end_wait_ms": 4000,
+   "call_floor_ms": 8000,
+   "call_bytes_per_s": 32000
+  },
+  "resume": {
+   "enabled": true,
+   "max_resumes": 1,
+   "_max_resumes_note": "Author, 2026-10-14: one restart. An interruption is leaving full screen, switching to another tab, window or program (the page hidden or the focus lost), losing the pointer lock, a reload, or closing and reopening the study link; one departure counts once; reloads, reopenings and pauses inside a block count together over the whole run, practice and main blocks. The first restarts the interrupted block from its first trial, with the warning on the pause or welcome-back screen; the second ends the run at once with stopped.reason interruption_limit: no end survey, no completion code, no payment (text.stop.interruption_lines, the participant returns the submission). The participant texts (text.online.leave_warning, resume, pause, fullscreen) state this rule; change them with this number. Was 3 (2026-10-06).",
+   "max_gap_minutes": 30,
+   "session_factor": 2,
+   "restart": "block",
+   "reuse_geometry": true,
+   "pause_in_block": true,
+   "debounce_ms": 300,
+   "blur_ms": 1000,
+   "brief_loss_ms": 1000,
+   "_brief_loss_ms_note": "Author 2026-10-19: a lost focus or hidden page during the cloud or the mask that is back within 1 s aborts that trial only (no points, no deduction, recorded) and is not a departure; 1 s or longer stays a departure. A resize, a change of the device pixel ratio, a lost full screen or a lost pointer lock keep their handling.",
+   "heartbeat_s": 30,
+   "one_tab": true,
+   "server_mark": true,
+   "fresh_heartbeat_s": 90
+  },
+  "completion": {
+   "redirect_base": "demo_end.html?ending=",
+   "codes_file": "config/online/completion_codes.json",
+   "redirect_delay_ms": 2000
+  }
+ }
+}

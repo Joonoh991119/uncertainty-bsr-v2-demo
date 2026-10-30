@@ -1,0 +1,19 @@
+{
+  "_README": "Lab run profile: environment only, no task settings. Monitor values filled 2026-10-02 for the display mode the author chose for the demo (3840 x 2160 at device pixel ratio 1; Room 649 monitor 59.674 cm wide, viewing distance 68 cm); the pages accept w_cm, w_px and d_cm as URL parameters to override them for a quick check.",
+  "profile": "lab",
+  "backend": "local",
+  "geometry": {
+    "source": "measured",
+    "screen_width_cm": 59.674,
+    "screen_width_css_px": 3840,
+    "viewing_distance_cm": 68,
+    "expected_device_pixel_ratio": 1
+  },
+  "refresh": {
+    "expected_hz": 60,
+    "tolerance_hz": 1
+  },
+  "language": "en",
+  "operator_panel": true,
+  "online": null
+}

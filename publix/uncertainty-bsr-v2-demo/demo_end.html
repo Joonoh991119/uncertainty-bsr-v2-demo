@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>End of the demo</title>
+<style>
+  html, body { margin: 0; min-height: 100%; background: rgb(128, 128, 128); color: #000; font: 20px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  main { max-width: 760px; margin: 12vh auto 0; padding: 0 16px; }
+  h1 { font-size: 34px; margin: 0 0 20px; }
+  p { margin: 0 0 16px; }
+  a.button { display: inline-block; margin-top: 12px; padding: 10px 22px; background: #eee; color: #000; border: 1px solid #333; border-radius: 6px; text-decoration: none; }
+  .small { font-size: 16px; color: #222; }
+</style>
+</head>
+<body>
+<main>
+  <h1>End of the demo</h1>
+  <p id="what"></p>
+  <p>This was a demonstration only. Nothing you entered was saved or sent anywhere, and there is no payment.</p>
+  <p><a class="button" href="../../index.html">Start the demo again</a></p>
+  <p class="small">You can close this tab now.</p>
+</main>
+<script>
+  var ending = new URLSearchParams(location.search).get('ending') || '';
+  var lines = {
+    practice_done: 'You finished the practice block. In the real study, the main blocks would start here; the demo stops before them.',
+    'demo-early_stop': 'The run stopped early, as it would in the real study (for example when responses were missed twice in a row, or when the practice did not pass the practice checks).',
+    'demo-device_refused': 'The equipment check did not pass on this computer or browser.',
+    'demo-no_consent': 'You chose not to take part on the consent page.',
+    'demo-finished': 'The run reached its end.',
+    'demo-time_limit': 'The run reached its time limit.'
+  };
+  document.getElementById('what').textContent = lines[ending] || 'The run ended.';
+</script>
+</body>
+</html>

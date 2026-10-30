@@ -1,0 +1,40 @@
+{
+  "_README": "Exposure-calibration pilot (stage 0/1, harness.html): estimation only. An optional tool for a laboratory pilot, not a gate: the two exposure conditions of Exp1 are chosen from the exposure-time literature (author, 2026-09-30), and this harness only measures estimation responses at several durations if a pilot wants them. Display, stimulus, ITI, fixation and the wait for a regular frame clock before the first trial (timing.fullscreen_settle_frames, timing.fullscreen_settle_max_ms) come from experiment_file; only the exposure durations differ. Keys starting with '_' are comments. Paths in '_pilot' are provisional.",
+  "schema_version": 1,
+  "calibration_id": "numerosity_exposure_calibration_v1",
+  "seed_salt": "numerosity_exposure_calibration_v1",
+  "experiment_file": "config/experiments/exp1.json",
+  "profile_file": "config/profiles/lab.json",
+
+  "durations_ms": [67, 133, 250, 500, 1000],
+  "levels": "union_of_contexts",
+  "reps_per_cell": 1,
+  "feature_thirds": "stratified_per_duration",
+  "order": "seeded_shuffle",
+  "pilot_trials": 3,
+  "fullscreen": true,
+
+  "response": { "min": 1, "max": 200 },
+  "keys": {
+    "_note": "KeyboardEvent.code values, so a Korean input method does not change them.",
+    "begin": "Space",
+    "submit": ["Enter", "NumpadEnter"],
+    "download": "KeyD",
+    "override_refresh": "KeyO"
+  },
+
+  "text": {
+    "instructions": [
+      "In each trial a cloud of dots appears briefly in the centre of the screen.",
+      "Keep your eyes on the small target in the centre until the dots appear.",
+      "Then type how many dots you think there were, as a whole number, and press Enter.",
+      "If you are unsure, give your best guess. There is no time limit."
+    ],
+    "begin": "Press the space bar to begin.",
+    "prompt": "How many dots? Type a number and press Enter.",
+    "invalid": "Please type a whole number from {min} to {max}.",
+    "done": "Finished. Thank you!"
+  },
+
+  "_pilot": ["durations_ms", "reps_per_cell"]
+}

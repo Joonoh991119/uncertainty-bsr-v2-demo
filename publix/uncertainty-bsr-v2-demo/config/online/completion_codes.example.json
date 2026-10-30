@@ -1,0 +1,17 @@
+{
+  "_note": "Example only, with placeholder codes. The real file, config/online/completion_codes.json, is written at deploy time by tools/jatos_deploy.py from the codes the Prolific operations engine made when it drafted each study (data/prolific/completion_codes/<study_key>_w<wave>.json): into the study archive always, into this folder only with --write-local. It is git-ignored and never committed, because a participant who knew the finished code could skip the task. slots holds one set of four codes per Prolific study and wave, keyed '<study_key>_w<wave>' as the address names them (study_key and wave). There are no top-level codes (2026-10-12): the page reads only the slot of its own study_key and wave and does not start without it, so no run is sent back with another study's codes.",
+  "slots": {
+    "exp0_s1_w0": {
+      "finished": "example-code-1",
+      "early_stop": "example-code-2",
+      "device_refused": "example-code-3",
+      "no_consent": "example-code-4"
+    },
+    "exp0_s2_w0": {
+      "finished": "example-code-5",
+      "early_stop": "example-code-6",
+      "device_refused": "example-code-7",
+      "no_consent": "example-code-8"
+    }
+  }
+}

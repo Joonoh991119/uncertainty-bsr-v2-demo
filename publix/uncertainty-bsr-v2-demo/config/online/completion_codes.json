@@ -1,0 +1,12 @@
+{
+ "_note": "Demo only: not Prolific codes.",
+ "slots": {
+  "pilot_bsr_v2_s1_w1": {
+   "finished": "demo-finished",
+   "early_stop": "demo-early_stop",
+   "device_refused": "demo-device_refused",
+   "no_consent": "demo-no_consent",
+   "time_limit": "demo-time_limit"
+  }
+ }
+}
